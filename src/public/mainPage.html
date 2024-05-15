@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JointChat</title>
+<link rel="stylesheet" href="/styles/mainPageStyle.css">
+</head>
+<body>
+
+<div class="logo">
+  <img src="/images/logo.png" alt="JointChat Logo"> 
+</div>
+
+<h1>Welcome to JointChat</h1>
+<div id="text-content">Your virtual assistant dedicated to providing credible information about osteoarthritis and its management.</div>
+
+<h2 class="role-title">Choose your Role to Continue</h2>
+
+<div class="role-container">
+    <div class="role-button" onclick="selectRole(this, 'patient')">
+      <img src="/images/patient.png" alt="Patient">
+      <p>People with</p>
+      <p>Osteoarthritis</p>
+    </div>
+    
+    <div class="role-button" onclick="selectRole(this, 'researcher')">
+      <img src="/images/researcher.png" alt="Researcher">
+      <p>Clinics</p >
+    </div>
+
+    <div class="role-button" onclick="selectRole(this, 'guest')">
+      <img src="/images/guest.png" alt="Guest">
+      <p>Others</p >
+    </div>
+</div>
+
+<div id="credits">
+  Developed by researchers from the Centre for Health, Exercise and Sports Medicine at the University of Melbourne, JointChat offers tailored responses drawn from selected credible sources only, chosen by our researchers based on their credibility, accuracy, and trustworthiness.
+</div>
+
+<button id="start-button" onclick="window.location='/start-chat'">Start</button>
+
+<script>
+    // Typewriter effect for text
+    function typeWriter(element, text, index, callback) {
+      if (index === 0) element.innerHTML = ""; 
+      if (index < text.length) {
+        element.innerHTML += text.charAt(index);
+        index++;
+        setTimeout(() => typeWriter(element, text, index, callback), 15);
+      } else if(callback) {
+        callback();
+      }
+    }
+    // Initialize typing animation
+    function initAnimations() {
+      const headerElement = document.querySelector('h1');
+      const textContentElement = document.getElementById('text-content');
+      const roleTitleElement = document.querySelector('h2');
+      const creditsElement = document.getElementById('credits');
+
+      headerElement.innerHTML = ""; 
+      textContentElement.innerHTML = ""; 
+      roleTitleElement.innerHTML = "";
+      creditsElement.innerHTML = "";
+
+      const welcomeText = "Welcome to JointChat";
+      const detailedText = "Your virtual assistant dedicated to providing credible information about osteoarthritis and its management.";
+      const roleTitleText = "Choose your Role to Continue"
+      const creditsText = " Developed by researchers from the Centre for Health, Exercise and Sports Medicine at the University of Melbourne, JointChat offers tailored responses drawn from selected credible sources only, chosen by our researchers based on their credibility, accuracy, and trustworthiness."
+      typeWriter(headerElement, welcomeText, 0, () => {
+        typeWriter(textContentElement, detailedText, 0, () => {
+          typeWriter(roleTitleElement, roleTitleText, 0, () =>{
+            document.querySelector('.role-container').style.opacity = 1;
+            fadeInRoles();
+            typeWriter(creditsElement, creditsText, 0, () =>{
+              document.querySelector('#start-button').style.opacity = 1;
+              fadeInStart();
+            });
+          });
+        });
+      });
+    }
+
+    // Fade in elements
+    function fadeInRoles() {
+      document.querySelector('.role-container').classList.add('fade-in');
+      // document.querySelector('.credits').classList.add('fade-in');
+      // document.getElementById('start-button').classList.add('fade-in');
+    }
+    function fadeInStart() {
+      document.getElementById('start-button').classList.add('fade-in');
+    }
+
+    document.addEventListener('DOMContentLoaded', initAnimations);
+    
+    // Select role and highlight
+    function selectRole(element, role) {
+    // Reset all buttons to non-selected state
+        document.querySelectorAll('.role-button').forEach(btn => {
+        btn.classList.remove('selected');
+        });
+        
+        // Add 'selected' class to the clicked button
+        element.classList.add('selected');
+    }
+    
+    // Go to next page
+    function goToNextPage() {
+      window.location.href = 'chatPage.html';
+      // alert('Go to next page logic here.');
+    }
+
+  </script>
+
+</body>
+</html>

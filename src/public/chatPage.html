@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JointChat Conversation</title>
+    <link rel="stylesheet" href="/styles/chatPageStyle.css?v=1">
+</head>
+<body>
+    <div class="chat-container">
+        <div class="header">
+            <img src="/images/unimelb-logo.png" alt="Unimelb Logo" id="unimelbLogo">
+            <h1>JointChat</h1>
+        </div>
+        <div class="chat-content" id="chatContent">
+            <div id="introText">
+                <p>JointChat is still learning, so when you interact with it, you're actively contributing to its improvement. This means we'll be monitoring its responses and making adjustments based on your interactions, ensuring it meets the needs of people with osteoarthritis.</p>
+                <p>Whether you're seeking insights on symptom management, treatment options, or lifestyle adjustments, JointChat is here to provide personalized responses based on the latest research and expert recommendations.</p>
+                <p>Just ask JointChat a question to begin your journey towards better understanding osteoarthritis and its management.</p>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="input-area">
+                <textarea placeholder="Type your message here..." id="userMessage"></textarea>
+                <button class="send-button" id="sendButton">➤</button>
+            </div>
+            <p class="reference">Our goal is to make AI systems more natural and safe to interact with. Your feedback will help us improve.</p>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+    const socket = io();
+    
+    document.getElementById('sendButton').addEventListener('click', updateChat);
+    document.getElementById('userMessage').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            updateChat();
+        }
+    });
+
+    socket.on('response', function(responseMessage) {
+        //console.log(responseMessage["content"]);
+        const userInput = document.getElementById('userMessage');
+        const sendButton = document.getElementById('sendButton');
+        let botDiv = document.createElement('div');
+        botDiv.className = 'bot-message-bubble';
+        chatContent.appendChild(botDiv);
+        let botText = responseMessage["content"];
+        let typingIndex = 0;
+        let typingDelay = 10; // Typing delay for each character
+        chatContent.scrollTop = chatContent.scrollHeight;
+        function typeCharacter() {
+            if (typingIndex < botText.length) {
+                botDiv.textContent += botText.charAt(typingIndex);
+                typingIndex++;
+                setTimeout(typeCharacter, typingDelay);
+            } else {
+                // Typing finished, re-enable input and button
+                userInput.disabled = false;
+                sendButton.disabled = false;
+                botDiv.style.paddingRight = '15px'; // Compensate for cursor space after typing
+            }
+        }
+
+        typeCharacter(); // Start typing
+    });
+    
+    function updateChat() {
+        const userMessage = document.getElementById('userMessage').value.trim();
+        const introText = document.getElementById('introText');
+        const chatContent = document.getElementById('chatContent');
+        const userInput = document.getElementById('userMessage');
+        const sendButton = document.getElementById('sendButton');
+
+        if (userMessage) {
+            socket.emit('askQuestion', userMessage);
+
+            //console.log(userMessage);
+
+            if (introText && introText.style.display !== 'none') {
+                introText.style.display = 'none';
+                chatContent.style.width = '65%'; // Adjust the width as needed
+            }
+
+            let userDiv = document.createElement('div');
+            userDiv.className = 'user-message-bubble';
+            userDiv.innerText = userMessage;
+            chatContent.appendChild(userDiv);
+            chatContent.scrollTop = chatContent.scrollHeight;
+
+            // Disable input and button while the bot is 'typing'
+            userInput.disabled = true;
+            sendButton.disabled = true;
+            document.getElementById('userMessage').value = '';
+        }
+    }
+
+
+
+    </script>
+
+</body>
+</html>

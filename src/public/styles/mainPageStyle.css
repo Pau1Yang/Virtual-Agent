@@ -1,0 +1,105 @@
+body {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500; 
+  margin: 0;
+  padding: 100px 0 0 0; 
+  background-color: #343541;
+  color: white; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  height: 100vh;
+  letter-spacing: .15em;
+}
+  .role-button p, h1, h2, #credits, #start-button {
+    font-family: 'Inter', sans-serif; 
+    font-weight: 500; 
+    letter-spacing: .15em;
+  }
+  .logo img {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 20px;
+  }
+  
+  h1, h2, #credits {
+    font-size: 15px;
+    margin: 10px 0;
+    font-weight: normal; 
+  }
+  
+  h2.role-title {
+    margin-top: 45px; /* Choose your Role */
+  }
+  
+  .role-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  .role-button {
+    margin: 20px 40px;
+    cursor: pointer;
+    text-align: center;
+  }
+  
+  .role-button img {
+    width: 80px;
+    border-radius: 50%;
+    background-color: white;
+    padding: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 10px; 
+    border: 5px solid transparent; 
+    transition: border-color 0.3s ease;
+  }
+  
+  .role-button.selected img {
+    border-color: #0FA47F; 
+  }
+  
+  
+  .role-button p {
+    color: white;
+    font-size: 15px;
+    margin-top: 0;
+  }
+  
+  #start-button {
+    background-color: #0FA47F;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 20px;
+  }
+  
+  #credits {
+    max-width: 600px; 
+    margin: 0 auto; 
+    margin-bottom: 30px; 
+    text-align: left; 
+    display: block;
+    line-height: 2.5;
+  }
+  .role-container, #start-button {
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+  }
+  
+  /* Fade in animation */
+  .fade-in {
+    opacity: 1 !important;
+  }
+  
+  /* Typewriter effect for h1 and #text-content */
+  h1, #text-content {
+    overflow: hidden; /* Keeps the container from expanding */
+    white-space: nowrap; /* Keeps the text on a single line */
+    /* letter-spacing: .15em; Adjust spacing */
+  }
+  
