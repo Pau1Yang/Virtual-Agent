@@ -18,15 +18,6 @@ const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
 });
 
-// 创建 MySQL 连接
-const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'chat_history'
-});
-// 连接到 MySQL 数据库
-connection.connect();
 
 app.use(express.static('src/public'));
 app.use(session({
