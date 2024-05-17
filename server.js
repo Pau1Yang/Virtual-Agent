@@ -19,12 +19,14 @@ const openai = new OpenAI({
 });
 
 // 创建 MySQL 连接
-const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'chat_history'
-});
+// const connection = mysql.createConnection({
+//     host: 'localhost',
+//     user: 'root',
+//     password: '',
+//     database: 'chat_history'
+// });
+const dbConfig = process.env.JAWSDB_URL || process.env.CLEARDB_DATABASE_URL;
+const connection = mysql.createConnection(dbConfig);
 // 连接到 MySQL 数据库
 connection.connect();
 
