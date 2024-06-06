@@ -6,6 +6,92 @@ const OpenAI = require('openai');
 const dotenv = require('dotenv');
 const { SourceTextModule } = require('vm');
 const mysql = require('mysql'); // 导入 MySQL 模块
+const cron = require('node-cron');
+const Excel = require('exceljs');
+const nodemailer = require('nodemailer');
+
+// 定时任务，例如每周日午夜执行
+cron.schedule('0 0 * * 0', function() {
+    console.log('Running a task every week');
+    fetchDataAndSendEmail();
+});
+
+
+async function fetchDataAndSendEmail() {
+    const query = 'SELECT * FROM chat'; // 获取所有聊天记录
+    connection.query(query, async (error, results) => {
+        if (error) {
+            return console.error('Error fetching data:', error);
+        }
+        const workbook = new Excel.Workbook();
+        const worksheet = workbook.addWorksheet('Chat History');
+        worksheet.columns = [
+            { header: 'Question', key: 'question', width: 30 },
+            { header: 'Response', key: 'response', width: 30 }
+        ];
+        // Add array rows
+        worksheet.addRows(results);
+
+        // Write to a file
+        try {
+            await workbook.xlsx.writeFile('ChatHistory.xlsx');
+            console.log('File is written');
+            sendEmail(); // Send email after file is written
+        } catch (err) {
+            console.error('Error writing file:', err);
+        }
+    });
+}
+
+function sendEmail() {
+    const transporter = nodemailer.createTransport({
+        host: 'smtp-mail.outlook.com',
+        port: 587,
+        secure: false, // true for 465, false for other ports
+        auth: {
+            user: process.env.OUTLOOK_USER,
+            pass: process.env.OUTLOOK_PASS
+        },
+        tls: {
+            ciphers:'SSLv3'
+        }
+    });
+    
+
+    const mailOptions = {
+        from: 'testoskoala@outlook.com',
+        to: '313431672yys@gmail.com',
+        subject: 'Weekly Chat History',
+        text: 'Attached is this week\'s chat history.',
+        attachments: [
+            {
+                filename: 'ChatHistory.xlsx',
+                path: './ChatHistory.xlsx'
+            }
+        ]
+    };
+
+    transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+            console.log('Error sending mail:', error);
+        } else {
+            console.log('Email sent: ' + info.response);
+            clearDatabase();
+            // Optionally, clear the database here if needed
+        }
+    });
+}
+
+function clearDatabase() {
+    console.log('start clear');
+    const query = 'DELETE FROM chat'; // 清空聊天表
+    connection.query(query, (error, results) => {
+        if (error) {
+            return console.error('Error clearing database:', error);
+        }
+        console.log('Database cleared');
+    });
+}
 
 dotenv.config();
 
@@ -77,7 +163,7 @@ io.on('connection', (socket) => {
                 messages: messages.concat([
                     {"role": "user", "content": question}
                 ]),
-                model: "ft:gpt-3.5-turbo-1106:personal:test:9EAMZzkz"
+                model: "ft:gpt-3.5-turbo-1106:chesm:ver1:9RejJ94f"
             });
             console.log("Respond!")
             const response = completion.choices[0].message["content"];
